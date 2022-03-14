@@ -7,7 +7,7 @@ class App extends Component{
 		let scene = new THREE.Scene();
 		let camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-		let renderer = new THREE.WebGLRenderer();
+		let renderer = renderer = new THREE.WebGLRenderer( { antialias: true } );
 		renderer.setSize( window.innerWidth, window.innerHeight );
 		this.mount.appendChild( renderer.domElement );
 		let material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
@@ -33,11 +33,33 @@ class App extends Component{
 				}
 		)
 
+		let curpos = [0, 0, 0]
+		let index = 0
+		let change = 0
+		function linearise(delta, curpos, axis, rotation){
+			if(length(rotation) >= index) {
+				diff = (rotation[index] - curpos[axis])*(Math.PI/180)
+				change += (diff-change)*delta
+				if(diff < 0.01) {
+					index += 1
+					change = 0 
+					return 0
+				}
+				return change
+			}
+			else {
+				return 0 
+			}
+		}
+
+
+
 		function animate() {
 				requestAnimationFrame( animate );
 				if(mesh) {
 
 				}
+				
 
 				renderer.render( scene, camera );
 		};
